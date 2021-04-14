@@ -1,5 +1,5 @@
-#Maze Generator
-##How to setup project
+# Maze Generator
+## How to setup project
 * Clone Maze Generator from github 
 * Create environment 
 * Activate environment
