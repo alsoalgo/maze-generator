@@ -1,12 +1,13 @@
-#from maze import Maze
+from maze import Maze
+from generator import Generator
 import colorama
 from colorama import Fore, Back, Style
 
 
 class View:
-    #_maze = Maze()
+    _maze = Maze()
 
-    def __init__(self, maze_=""):
+    def __init__(self, maze_=Maze()):
         self._maze = maze_
 
     @property
@@ -19,22 +20,29 @@ class View:
 
     
     def draw(self, type_="console"):
-        def cyan(): # border
-            return Fore.CYAN + Back.CYAN + "#" + Style.RESET_ALL
+        def border(): # border
+            prefix = Fore.BLACK + Back.BLACK
+            postfix = Style.RESET_ALL
+            return prefix + "\u2B1B" + postfix
 
-        def white(): # empty
-            return Fore.WHITE + Back.WHITE + "#" + Style.RESET_ALL
+        def empty(): # empty
+            prefix = Fore.WHITE + Back.WHITE 
+            postfix = Style.RESET_ALL
+            return prefix + "\u2B1B" + postfix
 
         
         colorama.init()
         size = self._maze.size
-        output = [[cyan() for i in range(size[1] * 4 + 2)] for i in range(size[0] * 4 + 2)]
+        output = [[border() for i in range(size[1] * 4 + 2)] for i in range(size[0] * 4 + 2)]
 
         walls = {"top" : [[-1, 0], [-1, 1]],
                  "left" : [[0, -1], [1, -1]],
                  "bottom" : [[2, 0], [2, 1]],
                  "right" : [[0, 2], [1, 2]],
                 }
+        cell_inner = [[0, 0], [0, 1],
+                      [1, 0], [1, 1],
+                      ]
 
         map = self._maze.map
         for i in range(size[0]):
@@ -42,11 +50,12 @@ class View:
                 cell = map[i][j]
                 out_i = 2 + 4 * i
                 out_j = 2 + 4 * j
+                for move in cell_inner:
+                    output[out_i + move[0]][out_j + move[1]] = empty()
                 for wall in walls:
-                    if getattr(cell, "wall_" + wall[0]):
-                        output[out_i][out_j] = cyan()
-                    else:
-                        output[out_i][out_j] = white()
+                    if not getattr(cell, "wall_" + wall):
+                        for move in walls[wall]:
+                            output[out_i + move[0]][out_j + move[1]] = empty()
         output_string = ""
         for line in output:
             output_string += "".join(line) + "\n"
@@ -57,3 +66,34 @@ class View:
     
     def save(self, path):
         pass
+        size = self._maze.size
+        output = [["#" for i in range(size[1] * 4 + 2)] for i in range(size[0] * 4 + 2)]
+
+        walls = {"top" : [[-1, 0], [-1, 1]],
+                 "left" : [[0, -1], [1, -1]],
+                 "bottom" : [[2, 0], [2, 1]],
+                 "right" : [[0, 2], [1, 2]],
+                }
+        cell_inner = [[0, 0], [0, 1],
+                      [1, 0], [1, 1],
+                      ]
+
+        map = self._maze.map
+        for i in range(size[0]):
+            for j in range(size[1]):
+                cell = map[i][j]
+                out_i = 2 + 4 * i
+                out_j = 2 + 4 * j
+                for move in cell_inner:
+                    output[out_i + move[0]][out_j + move[1]] = " "
+                for wall in walls:
+                    if not getattr(cell, "wall_" + wall):
+                        for move in walls[wall]:
+                            output[out_i + move[0]][out_j + move[1]] = " "
+        output_string = ""
+        for line in output:
+            output_string += "".join(line) + "\n"
+        
+        file_ = open(path + ".txt", "r")
+        file_.write(output_string)
+        file_.close()
