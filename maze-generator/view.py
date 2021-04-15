@@ -57,6 +57,3 @@ class View:
     
     def save(self, path):
         pass
-    
-v = View()
-v.draw()
