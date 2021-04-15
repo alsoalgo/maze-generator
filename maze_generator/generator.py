@@ -1,4 +1,4 @@
-from maze import *
+from .maze import *
 from random import randrange
 
 
