@@ -20,50 +20,56 @@ class Cell:
     def __int__(self):
         return self._position[0] * self._maze_size[0] + self._position[1]
 
+    def __getitem__(self, index):
+        return self._position[index]
+    
+    def __setitem__(self, index, value):
+        self._position[index] = value
+
     @property
     def position(self):
         return self._position
-
-    @position.setter
-    def position(self, value):
-        self._position = value
 
     @property
     def maze_size(self):
         return self._maze_size
      
-    @maze_size.setter
-    def maze_size(self, value):
-        self._maze_size = value
-
     @property
     def wall_top(self):
         return self._walls[0]
-
-    @wall_top.setter
-    def wall_top(self, value):
-        self._walls[0] = value
 
     @property
     def wall_left(self):
         return self._walls[1]
 
+    @property
+    def wall_bottom(self):
+        return self._walls[2]
+
+    @property
+    def wall_right(self):
+        return self._walls[3]
+
+    @position.setter
+    def position(self, value):
+        self._position = value
+
+    @maze_size.setter
+    def maze_size(self, value):
+        self._maze_size = value
+
+    @wall_top.setter
+    def wall_top(self, value):
+        self._walls[0] = value
+
     @wall_left.setter
     def wall_left(self, value):
         self._walls[1] = value
 
-    @property
-    def wall_bottom(self):
-        return self._walls[2]
-    
     @wall_bottom.setter
     def wall_bottom(self, value):
         self._walls[2] = value
 
-    @property
-    def wall_right(self):
-        return self._walls[3] 
-    
     @wall_right.setter
     def wall_right(self, value):
         self._walls[3] = value
