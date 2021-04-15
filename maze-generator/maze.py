@@ -92,8 +92,7 @@ class Maze:
         f_i, f_j = first_cell[0], first_cell[1]
         s_i, s_j = second_cell[0], second_cell[1]
         self.remove_wall(self[f_i, f_j], self[s_i, s_j])
-    
-    def 
+
     
     
 
