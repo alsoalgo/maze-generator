@@ -85,3 +85,13 @@ class Cell:
     
     def is_right(self, other_cell):
         return self._position[1] + 1 == other_cell.position[1]
+    
+    def neighbour_type(self, other_cell):
+        if self.is_top(other_cell):
+            return "top"
+        if self.is_left(other_cell):
+            return "left"
+        if self.is_bottom(other_cell):
+            return "bottom"
+        if self.is_right(other_cell):
+            return "right"
