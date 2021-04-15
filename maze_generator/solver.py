@@ -39,6 +39,7 @@ class Solver:
             path.append(cell_)
         path_ = path_[::-1]
         self._path = path_
+        return self._path
     
     @property
     def path(self):
