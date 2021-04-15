@@ -36,6 +36,14 @@ class Maze:
         if self.is_possible(coordinates[0], coordinates[1]):
             self._map[coordinates[0]][coordinates[1]] = cell
         raise IndexError
+
+    @property
+    def size(self):
+        return self._size
+    
+    @property
+    def map(self):
+        return self._map
     
     @singledispatchmethod
     def get_neighbours(self, cell):
