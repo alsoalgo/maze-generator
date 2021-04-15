@@ -1,6 +1,7 @@
 from .cell import Cell
 from .maze import Maze
 from .generator import Generator
+from .solver import Solver
 
 import colorama
 from colorama import Fore, Back, Style
@@ -22,7 +23,20 @@ class View:
     def maze(self, value):
         self._maze = value
 
-    def maze_to_string(self):
+    def maze_to_string(self, with_path):
+        def sym(t):
+            if t == "b":
+                return "#"
+            elif t == "e":
+                return " "
+            elif t == "p"
+                return "@"
+            
+        path = []
+        if with_path:
+            solver_ = Solver(self._maze)
+            path = solver_.solve()
+
         size = self._maze.size
         output = [["#" for i in range(size[1] * 4 + 2)] for i in range(size[0] * 4 + 2)]
 
@@ -53,7 +67,7 @@ class View:
         return output_string
 
 
-    def draw_console(self):
+    def draw_console(self, with_path):
         def border(): # border
             prefix = Fore.CYAN + Back.CYAN
             postfix = Style.RESET_ALL
@@ -78,14 +92,14 @@ class View:
 
         print(beautiful_maze_string)
     
-    def draw_graphics(self):
+    def draw_graphics(self, with_path):
         pass
     
-    def draw(self, type_="console"):
+    def draw(self, type_="console", path_="yes"):
         if type_ == "console":
-            self.draw_console()
+            self.draw_console(path_)
         else:
-            self.draw_graphics()
+            self.draw_graphics(path_)
 
     def load(self, path):
         file_ = None
