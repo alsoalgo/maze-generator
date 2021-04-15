@@ -10,7 +10,7 @@ class Maze:
         return (0 <= i) and (i < self._size[0]) \
             and (0 <= j) and (j < self._size[1])
 
-    def get_neighbour(self, i, j):
+    def get_cell(self, i, j):
         if self.is_possible(i, j):
             return self._map[i][j]
         return None
@@ -46,7 +46,7 @@ class Maze:
         for (move_i, move_j) in moves:
             neighbour_i = i + move_i
             neighbour_j = j + move_j
-            neighbour = self.get_neighbour(neighbour_i, neighbour_j)
+            neighbour = self.get_cell(neighbour_i, neighbour_j)
             if neighbour:
                 neighbours.append(neighbour)
         return neighbours
@@ -59,7 +59,38 @@ class Maze:
     
     @get_neighbours.register
     def _(self, cell : Cell) -> list:
-        return self.get_neighbours([cell.position[0], cell.position[1]])
+        return self.get_neighbours(int(cell))
+
+    @singledispatchmethod
+    def remove_wall(self, first_cell, second_cell):
+        raise NotImplementedError
+
+    @remove_wall.register
+    def _(self, first_cell, second_cell):
+        if isinstance(first_cell, int):
+            first_cell = self.get_cell(first_cell // self._size[0], first_cell % self._size[1])
+        if isinstance(second_cell, int):
+            second_cell = self.get_cell(second_cell // self._size[1], second_cell % self._size[1])
+        f_i, f_j = first_cell.position[0], first_cell.position[1]
+        s_i, s_j = second_cell.position[0], second_cell.position[1]
+        neighbourhood_type = ["top", "left", "bottom", "right"]
+        opposite = ["bottom", "right", "top", "left"]
+        for i in range(4):
+            is_ = getattr(first_cell, "is_" + neighbourhood_type[i])
+            if is_(second_cell):
+                setattr(first_cell, "wall_" + neighbourhood_type[i], False)
+                setattr(second_cell, "wall_" + opposite[i], False)
+                self[f_i, f_j] = first_cell
+                self[s_i, s_j] = second_cell
+    
+    @remove_wall.register
+    def _(self, first_cell : list, second_cell : list):
+        f_i, f_j = first_cell[0], first_cell[1]
+        s_i, s_j = second_cell[0], second_cell[1]
+        self.remove_wall(self[f_i, f_j], self[s_i, s_j])
+    
+    
+    
 
 
 
