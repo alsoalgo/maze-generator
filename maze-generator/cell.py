@@ -17,6 +17,9 @@ class Cell:
                             Cell.if_exists(arguments, "j"))
         self._walls = [True, True, True, True] 
 
+    def __int__(self):
+        return self._position[0] * self._maze_size[0] + self._position[1]
+
     @property
     def position(self):
         return self._position
@@ -41,3 +44,14 @@ class Cell:
     def wall_right(self):
         return self._walls[3] 
 
+    def is_top(self, other_cell):
+        return self._position[0] - 1 == other_cell.position[0]
+    
+    def is_left(self, other_cell):
+        return self._position[1] - 1 == other_cell.position[1]
+    
+    def is_bottom(self, other_cell):
+        return self._position[0] + 1 == other_cell.position[0]
+    
+    def is_right(self, other_cell):
+        return self._position[1] + 1 == other_cell.position[1]
