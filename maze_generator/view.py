@@ -1,6 +1,6 @@
-from cell import Cell
-from maze import Maze
-from generator import Generator
+from .cell import Cell
+from .maze import Maze
+from .generator import Generator
 
 import colorama
 from colorama import Fore, Back, Style
