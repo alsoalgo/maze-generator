@@ -25,6 +25,13 @@ class Cell:
     
     def __setitem__(self, index, value):
         self._position[index] = value
+    
+    def __eq__(self, other_cell):
+        return self._maze_size == other_cell._maze_size and \
+               self._position == other_cell._position
+    
+    def __neq__(self, other_cell):
+        return not (self == other_cell)
 
     @property
     def position(self):
