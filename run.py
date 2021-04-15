@@ -9,8 +9,8 @@ def main():
     parser.add_argument("graphics", help="Select console or gui display type")
     args = parser.parse_args()
     maze_ = Maze(int(args.n), int(args.m))
-    g = Generator()
-    maze_ = g.generate(maze_, args.generation_type)
+    generator_ = Generator()
+    maze_ = generator_.generate(maze_, args.generation_type)
     view_ = View(maze_)
     view_.draw(args.graphics)
 
