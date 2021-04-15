@@ -42,3 +42,4 @@ class Generator:
             return self.generate_by_dfs(maze_)
         elif type_ == "MST":
             return self.generate_by_mst(maze_)
+
