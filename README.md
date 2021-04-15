@@ -1,6 +1,7 @@
 # Maze Generator
 ## How to setup project
-* Clone Maze Generator branch version1 from github 
+* Clone Maze Generator from github 
+* Checkout to the `version1` branch
 * Create environment 
 * Activate environment
 * Run `pip3 install requirements.txt`
