@@ -50,17 +50,40 @@ class View:
                       ]
 
         map = self._maze.map
+        for i in range(len(path) - 1):
+            cell_ = path[i]
+            neighbour_ = path[i + 1]
+            type_ = cell_.neighbour_type(neighbour_)
+            for wall in walls:
+                if not getattr(cell_, "wall_" + wall):
+                    for move in walls[wall]:
+                        output[cell_[0] + move[0]][cell_[1] + move[1]] = " "
+                if not getattr(cell_, "wall_" + wall):
+                    for move in walls[wall]:
+                        output[neighbour_[0] + move[0]][neighbour_[1] + move[1]] = " "
+            for move in cell_inner:
+                output[cell_[0] + move[0]][cell_[1] + move[1]] = "@"
+            for move in walls[type_]:
+                output[cell_[0] + move[0]][cell_[1] + move[1]] = "@"
+            type_ = neighbour_.neighbour_type(cell_)
+            for move in cell_inner:
+                output[neighbour_[0] + move[0]][neighbour_[1] + move[1]] = "@"
+            for move in walls[type_]:
+                output[neighbour_[0] + move[0]][neighbour_[1] + move[1]] = "@"
+            
+
         for i in range(size[0]):
             for j in range(size[1]):
                 cell = map[i][j]
-                out_i = 2 + 4 * i
-                out_j = 2 + 4 * j
-                for move in cell_inner:
-                    output[out_i + move[0]][out_j + move[1]] = " "
-                for wall in walls:
-                    if not getattr(cell, "wall_" + wall):
-                        for move in walls[wall]:
-                            output[out_i + move[0]][out_j + move[1]] = " "
+                if cell not in path:
+                    out_i = 2 + 4 * i
+                    out_j = 2 + 4 * j
+                    for move in cell_inner:
+                        output[out_i + move[0]][out_j + move[1]] = " "
+                    for wall in walls:
+                        if not getattr(cell, "wall_" + wall):
+                            for move in walls[wall]:
+                                output[out_i + move[0]][out_j + move[1]] = " "
         output_string = ""
         for line in output:
             output_string += "".join(line) + "\n"
@@ -77,6 +100,11 @@ class View:
             prefix = Fore.WHITE + Back.WHITE 
             postfix = Style.RESET_ALL
             return prefix + "\u2B1B" + postfix
+        
+        def path(): # path
+            prefix = Fore.BLUE + Back.BLUE 
+            postfix = Style.RESET_ALL
+            return prefix + "\u2B1B" + postfix
 
         
         colorama.init()
@@ -87,6 +115,8 @@ class View:
                 beautiful_maze_string += border()
             elif symbol == ' ':
                 beautiful_maze_string += empty()
+            elif symbol == '@':
+                beautiful_maze_string += path()
             else:
                 beautiful_maze_string += symbol
 
