@@ -24,11 +24,15 @@ class Maze:
                 self._map[i].append(Cell(n=self._size[0], m=self._size[1], i=i, j=j))
     
     def __getitem__(self, coordinates):
+        if isinstance(coordinates, int):
+            coordinates = [coordinates // self._size[0], coordinates % self._size[1]]
         if self.is_possible(coordinates[0], coordinates[1]):
             return self._map[coordinates[0]][coordinates[1]]
         raise IndexError
     
     def __setitem__(self, coordinates, cell):
+        if isinstance(coordinates, int):
+            coordinates = [coordinates // self._size[0], coordinates % self._size[1]]
         if self.is_possible(coordinates[0], coordinates[1]):
             self._map[coordinates[0]][coordinates[1]] = cell
         raise IndexError
@@ -89,6 +93,7 @@ class Maze:
         s_i, s_j = second_cell[0], second_cell[1]
         self.remove_wall(self[f_i, f_j], self[s_i, s_j])
     
+    def 
     
     
 
