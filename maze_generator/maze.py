@@ -5,6 +5,8 @@ from functools import singledispatchmethod
 class Maze:
     _map = []
     _size = (0, 0)
+    _begin = (0, 0)
+    _end = (0, 0)
 
     def is_possible(self, i, j):
         return (0 <= i) and (i < self._size[0]) \
@@ -84,3 +86,20 @@ class Maze:
                 setattr(second_cell, "wall_" + opposite[i], False)
                 self[f_i, f_j] = first_cell
                 self[s_i, s_j] = second_cell
+
+    @property
+    def begin(self):
+        return self._begin
+    
+    @property
+    def end(self):
+        return self._end
+    
+    @begin.setter
+    def begin(self, value):
+        self._begin = value
+    
+    @end.setter
+    def end(self, value):
+        self._end = value
+    
