@@ -1,6 +1,6 @@
 from cell import Cell
-
 from functools import singledispatchmethod
+
 
 class Maze:
     _map = []
@@ -45,12 +45,11 @@ class Maze:
     def map(self):
         return self._map
     
-    @singledispatchmethod
-    def get_neighbours(self, cell):
-        raise NotImplementedError
-    
-    @get_neighbours.register
-    def _(self, cell : list) -> list:
+    def get_neighbours(self, cell) -> list:
+        if isinstance(cell, Cell):
+            cell = int(cell)
+        if isinstance(cell, int):
+            cell = [cell // self._size[0], cell % self._size[1]]
         neighbours = []
         i = cell[0]
         j = cell[1]
@@ -62,27 +61,18 @@ class Maze:
             if neighbour:
                 neighbours.append(neighbour)
         return neighbours
-    
-    @get_neighbours.register
-    def _(self, cell : int) -> list:
-        i = cell // self._size[0]
-        j = cell % self._size[1]
-        return self.get_neighbours([i, j])
-    
-    @get_neighbours.register
-    def _(self, cell : Cell) -> list:
-        return self.get_neighbours(int(cell))
+        
 
-    @singledispatchmethod
     def remove_wall(self, first_cell, second_cell):
-        raise NotImplementedError
-
-    @remove_wall.register
-    def _(self, first_cell, second_cell):
+        if isinstance(first_cell, list):
+            first_cell = self[first_cell[0], first_cell[1]]
+        if isinstance(second_cell, list):
+            second_cell = self[second_cell[0], second_cell[1]]
         if isinstance(first_cell, int):
             first_cell = self.get_cell(first_cell // self._size[0], first_cell % self._size[1])
         if isinstance(second_cell, int):
             second_cell = self.get_cell(second_cell // self._size[1], second_cell % self._size[1])
+        print(type(first_cell))
         f_i, f_j = first_cell.position[0], first_cell.position[1]
         s_i, s_j = second_cell.position[0], second_cell.position[1]
         neighbourhood_type = ["top", "left", "bottom", "right"]
@@ -90,20 +80,10 @@ class Maze:
         for i in range(4):
             is_ = getattr(first_cell, "is_" + neighbourhood_type[i])
             if is_(second_cell):
+                print("wall_" + neighbourhood_type[i])
                 setattr(first_cell, "wall_" + neighbourhood_type[i], False)
                 setattr(second_cell, "wall_" + opposite[i], False)
                 self[f_i, f_j] = first_cell
                 self[s_i, s_j] = second_cell
     
-    @remove_wall.register
-    def _(self, first_cell : list, second_cell : list):
-        f_i, f_j = first_cell[0], first_cell[1]
-        s_i, s_j = second_cell[0], second_cell[1]
-        self.remove_wall(self[f_i, f_j], self[s_i, s_j])
-
-    
-    
-
-
-
     
