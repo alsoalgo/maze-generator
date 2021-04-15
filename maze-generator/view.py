@@ -78,6 +78,9 @@ class View:
 
         print(beautiful_maze_string)
     
+    def draw_graphics(self):
+        pass
+    
     def draw(self, type_="console"):
         if type_ == "console":
             self.draw_console()
