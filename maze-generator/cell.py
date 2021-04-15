@@ -24,25 +24,49 @@ class Cell:
     def position(self):
         return self._position
 
+    @position.setter
+    def position(self, value):
+        self._position = value
+
     @property
     def maze_size(self):
-        return self._maze_size 
+        return self._maze_size
+     
+    @maze_size.setter
+    def maze_size(self, value):
+        self._maze_size = value
 
     @property
     def wall_top(self):
         return self._walls[0]
 
+    @wall_top.setter
+    def wall_top(self, value):
+        self._walls[0] = value
+
     @property
     def wall_left(self):
         return self._walls[1]
 
+    @wall_left.setter
+    def wall_left(self, value):
+        self._walls[1] = value
+
     @property
     def wall_bottom(self):
         return self._walls[2]
+    
+    @wall_bottom.setter
+    def wall_bottom(self, value):
+        self._walls[2] = value
 
     @property
     def wall_right(self):
         return self._walls[3] 
+    
+    @wall_right.setter
+    def wall_right(self, value):
+        self._walls[3] = value
 
     def is_top(self, other_cell):
         return self._position[0] - 1 == other_cell.position[0]
