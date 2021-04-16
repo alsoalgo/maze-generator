@@ -18,7 +18,7 @@ class Cell:
         self._walls = [True, True, True, True] 
 
     def __int__(self):
-        return self._position[0] * self._maze_size[0] + self._position[1]
+        return self._position[0] * self._maze_size[1] + self._position[1]
 
     def __getitem__(self, index):
         return self._position[index]
