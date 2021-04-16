@@ -8,7 +8,7 @@ class Generator:
 
     def generate_by_dfs(self, maze):
         size = maze.size
-        maze.begin = maze[0, 0]
+        maze.begin = maze.get_cell(0, 0)
         used_cells = [[False for i in range(size[1])] \
                         for i in range(size[0])]
         stack = []
@@ -35,19 +35,23 @@ class Generator:
                 stack.append(unvisited_neighbours[choose])
         for i in range(size[0]):
             for j in range(size[1]):
+                if i == 0 and j == 0:
+                    continue
                 top = int(maze[i, j].wall_top)
                 left = int(maze[i, j].wall_left)
                 bottom = int(maze[i, j].wall_bottom)
                 right = int(maze[i, j].wall_right)
-                if top + left + bottom + right == 3 and (i != 0 and j != 0):
+                if top + left + bottom + right == 3:
                     maze.end = maze[i, j] 
+        if maze.size == (1, 1):
+            maze.end = maze[0, 0]
         return maze
     
     def generate_by_mst(self, maze):
         size = maze.size
         current_cell = [0, 0]
         all_walls = []
-        maze.begin = maze[0, 0]
+        maze.begin = maze.get_cell(0, 0)
         used_cells = [[False for i in range(size[1])] \
                         for i in range(size[0])]
         used_cells[0][0] = True
@@ -71,12 +75,16 @@ class Generator:
             all_walls.pop(choose)
         for i in range(size[0]):
             for j in range(size[1]):
+                if i == 0 and j == 0:
+                    continue
                 top = int(maze[i, j].wall_top)
                 left = int(maze[i, j].wall_left)
                 bottom = int(maze[i, j].wall_bottom)
                 right = int(maze[i, j].wall_right)
-                if top + left + bottom + right == 3 and (i != 0 and j != 0):
+                if top + left + bottom + right == 3:
                     maze.end = maze[i, j] 
+        if maze.size == (1, 1):
+            maze.end = maze[0, 0]
         return maze
 
     def generate(self, maze_, type_="DFS"):
