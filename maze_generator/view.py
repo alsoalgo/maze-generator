@@ -23,17 +23,19 @@ class View:
     def maze(self, value):
         self._maze = value
 
-    def maze_to_string(self, with_path):
+    def maze_to_string(self, with_path="yes"):
         def sym(t):
             if t == "b":
                 return "#"
             elif t == "e":
                 return " "
-            elif t == "p"
+            elif t == "p":
                 return "@"
+            elif t == "f":
+                return "$"
             
         path = []
-        if with_path:
+        if with_path == "yes":
             solver_ = Solver(self._maze)
             path = solver_.solve()
 
@@ -54,27 +56,44 @@ class View:
             cell_ = path[i]
             neighbour_ = path[i + 1]
             type_ = cell_.neighbour_type(neighbour_)
+            out_cell_i = 2 + 4 * cell_[0]
+            out_cell_j = 2 + 4 * cell_[1]
+            out_n_i = 2 + 4 * neighbour_[0]
+            out_n_j = 2 + 4 * neighbour_[1]
             for wall in walls:
-                if not getattr(cell_, "wall_" + wall):
-                    for move in walls[wall]:
-                        output[cell_[0] + move[0]][cell_[1] + move[1]] = " "
-                if not getattr(cell_, "wall_" + wall):
-                    for move in walls[wall]:
-                        output[neighbour_[0] + move[0]][neighbour_[1] + move[1]] = " "
+                for move in walls[wall]:
+                    if not getattr(cell_, "wall_" + wall) and wall != type_:
+                        output[out_cell_i + move[0]][out_cell_j + move[1]] = sym("e")
             for move in cell_inner:
-                output[cell_[0] + move[0]][cell_[1] + move[1]] = "@"
+                output[out_cell_i + move[0]][out_cell_j + move[1]] = sym("p")
             for move in walls[type_]:
-                output[cell_[0] + move[0]][cell_[1] + move[1]] = "@"
+                output[out_cell_i + move[0]][out_cell_j + move[1]] = sym("p")
             type_ = neighbour_.neighbour_type(cell_)
+            for wall in walls:
+                for move in walls[wall]:
+                    if not getattr(neighbour_, "wall_" + wall) and wall != type_:
+                        output[out_n_i + move[0]][out_n_j + move[1]] = sym("e")
             for move in cell_inner:
-                output[neighbour_[0] + move[0]][neighbour_[1] + move[1]] = "@"
+                output[out_n_i + move[0]][out_n_j + move[1]] = sym("p")
             for move in walls[type_]:
-                output[neighbour_[0] + move[0]][neighbour_[1] + move[1]] = "@"
-            
+                output[out_n_i + move[0]][out_n_j + move[1]] = sym("p")
+            if i != 0:
+                neighbour_ = path[i - 1]
+                type_ = cell_.neighbour_type(neighbour_)
+                for move in walls[type_]:
+                    output[out_cell_i + move[0]][out_cell_j + move[1]] = sym("p")
+        
+        out_begin_i = 2 + 4 * self._maze.begin[0]
+        out_begin_j = 2 + 4 * self._maze.begin[1]
+        out_end_i = 2 + 4 * self._maze.end[0]
+        out_end_j = 2 + 4 * self._maze.end[1]
+        for move in cell_inner:
+            output[out_begin_i + move[0]][out_begin_j + move[1]] = sym("f")
+            output[out_end_i + move[0]][out_end_j + move[1]] = sym("f")
 
         for i in range(size[0]):
             for j in range(size[1]):
-                cell = map[i][j]
+                cell = self._maze[i, j]
                 if cell not in path:
                     out_i = 2 + 4 * i
                     out_j = 2 + 4 * j
@@ -105,20 +124,28 @@ class View:
             prefix = Fore.BLUE + Back.BLUE 
             postfix = Style.RESET_ALL
             return prefix + "\u2B1B" + postfix
+    
+        def begin_finish(): #begin/finish
+            prefix = Fore.GREEN + Back.GREEN 
+            postfix = Style.RESET_ALL
+            return prefix + "\u2B1B" + postfix
 
         
         colorama.init()
-        maze_string = self.maze_to_string()
+        maze_string = self.maze_to_string(with_path)
         beautiful_maze_string = ""
         for symbol in maze_string:
             if symbol == "#":
                 beautiful_maze_string += border()
             elif symbol == ' ':
                 beautiful_maze_string += empty()
-            elif symbol == '@':
+            elif symbol == '@' and with_path == "yes":
                 beautiful_maze_string += path()
-            else:
+            elif symbol == '$':
+                beautiful_maze_string += begin_finish()
+            elif symbol == "\n":
                 beautiful_maze_string += symbol
+            
 
         print(beautiful_maze_string)
     
