@@ -35,7 +35,7 @@ class Maze:
     def __setitem__(self, coordinates, cell):
         if isinstance(coordinates, int):
             coordinates = [coordinates // self._size[0], coordinates % self._size[1]]
-        if self.is_possible(coordinates[0], coordinates[1]):
+        if self.is_possible(coordinates[0], coordinates[1]) and isinstance(cell, Cell):
             self._map[coordinates[0]][coordinates[1]] = cell
         else:
             raise IndexError
@@ -49,8 +49,6 @@ class Maze:
         return self._map
     
     def get_neighbours(self, cell) -> list:
-        if isinstance(cell, Cell):
-            cell = int(cell)
         if isinstance(cell, int):
             cell = [cell // self._size[0], cell % self._size[1]]
         neighbours = []
@@ -61,16 +59,16 @@ class Maze:
             neighbour_i = i + move_i
             neighbour_j = j + move_j
             neighbour = self.get_cell(neighbour_i, neighbour_j)
-            if neighbour:
+            if isinstance(neighbour, Cell):
                 neighbours.append(neighbour)
         return neighbours
         
 
     def remove_wall(self, first_cell, second_cell):
         if isinstance(first_cell, list):
-            first_cell = self[first_cell[0], first_cell[1]]
+            first_cell = self.get_cell(first_cell[0], first_cell[1])
         if isinstance(second_cell, list):
-            second_cell = self[second_cell[0], second_cell[1]]
+            second_cell = self.get_cell(second_cell[0], second_cell[1])
         if isinstance(first_cell, int):
             first_cell = self.get_cell(first_cell // self._size[0], first_cell % self._size[1])
         if isinstance(second_cell, int):
