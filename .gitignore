@@ -1,3 +1,4 @@
 env
 .idea
+maze_generator/labyrinths
 maze_generator/__pycache__
